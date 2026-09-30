@@ -1,33 +1,21 @@
 "use strict";
 
-
 /* =========================
    ELEMENTS
 ========================= */
 
-const scoreboard =
-    document.getElementById("scoreboard");
+const scoreboard = document.getElementById("scoreboard");
 
-const messiSide =
-    document.getElementById("messiSide");
+const messiSide = document.getElementById("messiSide");
+const ronaldoSide = document.getElementById("ronaldoSide");
 
-const ronaldoSide =
-    document.getElementById("ronaldoSide");
+const messiScoreElement = document.getElementById("messiScore");
+const ronaldoScoreElement = document.getElementById("ronaldoScore");
 
-const messiScoreElement =
-    document.getElementById("messiScore");
+const messiCrown = document.getElementById("messiCrown");
+const ronaldoCrown = document.getElementById("ronaldoCrown");
 
-const ronaldoScoreElement =
-    document.getElementById("ronaldoScore");
-
-const messiCrown =
-    document.getElementById("messiCrown");
-
-const ronaldoCrown =
-    document.getElementById("ronaldoCrown");
-
-const resetButton =
-    document.getElementById("resetBtn");
+const resetButton = document.getElementById("resetBtn");
 
 
 /* =========================
@@ -36,6 +24,196 @@ const resetButton =
 
 let messiScore = 0;
 let ronaldoScore = 0;
+
+
+/* =========================
+   VOICE ENGINE
+========================= */
+
+const voiceSupported =
+    "speechSynthesis" in window &&
+    "SpeechSynthesisUtterance" in window;
+
+let voices = [];
+
+
+/*
+ * Load available voices.
+ * Some Android browsers load them
+ * slightly after the page opens.
+ */
+function loadVoices() {
+
+    if (!voiceSupported) {
+        return;
+    }
+
+    voices = window.speechSynthesis.getVoices();
+}
+
+
+/*
+ * Android/Chrome can fire this event
+ * when voices become available.
+ */
+if (voiceSupported) {
+
+    loadVoices();
+
+    if ("onvoiceschanged" in window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged =
+            loadVoices;
+    }
+}
+
+
+/* =========================
+   FIND ENGLISH VOICE
+========================= */
+
+function getEnglishVoice() {
+
+    if (!voices.length) {
+        voices =
+            window.speechSynthesis.getVoices();
+    }
+
+    /*
+     * Prefer US English.
+     */
+    let voice = voices.find(function (item) {
+        return (
+            item.lang &&
+            item.lang.toLowerCase() === "en-us"
+        );
+    });
+
+    if (voice) {
+        return voice;
+    }
+
+
+    /*
+     * Otherwise use any English voice.
+     */
+    voice = voices.find(function (item) {
+        return (
+            item.lang &&
+            item.lang
+                .toLowerCase()
+                .startsWith("en")
+        );
+    });
+
+    return voice || null;
+}
+
+
+/* =========================
+   SPEAK PLAYER
+========================= */
+
+function speakPlayer(player) {
+
+    if (!voiceSupported) {
+        return;
+    }
+
+    const text =
+        player === "messi"
+            ? "Messi"
+            : "Ronaldo";
+
+
+    /*
+     * Stop previous voice.
+     * This prevents overlapping audio.
+     */
+    try {
+        window.speechSynthesis.cancel();
+    } catch (error) {
+        // Ignore speech engine errors.
+    }
+
+
+    const speakNow = function () {
+
+        const utterance =
+            new SpeechSynthesisUtterance(text);
+
+
+        /*
+         * Clear English pronunciation.
+         */
+        utterance.lang = "en-US";
+
+
+        /*
+         * Full available speech volume.
+         */
+        utterance.volume = 1.0;
+
+
+        /*
+         * Normal-fast, clear speech.
+         */
+        utterance.rate = 0.95;
+
+
+        /*
+         * Natural voice pitch.
+         */
+        utterance.pitch = 1.0;
+
+
+        const englishVoice =
+            getEnglishVoice();
+
+        if (englishVoice) {
+            utterance.voice =
+                englishVoice;
+        }
+
+
+        /*
+         * Speak.
+         */
+        try {
+            window.speechSynthesis.speak(
+                utterance
+            );
+        } catch (error) {
+            // Keep scoreboard working.
+        }
+    };
+
+
+    /*
+     * Give Android speech engine a tiny
+     * moment after cancel().
+     */
+    setTimeout(speakNow, 30);
+}
+
+
+/* =========================
+   INITIALIZE AUDIO
+========================= */
+
+function initializeAudio() {
+
+    if (!voiceSupported) {
+        return;
+    }
+
+    /*
+     * Calling getVoices() helps initialize
+     * the Android speech engine.
+     */
+    voices =
+        window.speechSynthesis.getVoices();
+
+}
 
 
 /* =========================
@@ -53,7 +231,7 @@ function formatScore(score) {
 
 
 /* =========================
-   UPDATE SCREEN
+   RENDER SCORES
 ========================= */
 
 function renderScores() {
@@ -65,8 +243,9 @@ function renderScores() {
         formatScore(ronaldoScore);
 
 
-    /* Messi leading */
-
+    /*
+     * MESSI LEADING
+     */
     if (messiScore > ronaldoScore) {
 
         messiCrown.classList.add("show");
@@ -75,8 +254,9 @@ function renderScores() {
     }
 
 
-    /* Ronaldo leading */
-
+    /*
+     * RONALDO LEADING
+     */
     else if (ronaldoScore > messiScore) {
 
         ronaldoCrown.classList.add("show");
@@ -85,8 +265,9 @@ function renderScores() {
     }
 
 
-    /* Tie */
-
+    /*
+     * TIE
+     */
     else {
 
         messiCrown.classList.remove("show");
@@ -105,67 +286,12 @@ function animateScore(element) {
     element.classList.remove("pop");
 
     /*
-     * Force browser reflow so the
-     * animation can restart every tap.
+     * Force reflow so animation
+     * works on every single tap.
      */
     void element.offsetWidth;
 
     element.classList.add("pop");
-}
-
-
-/* =========================
-   VOICE
-========================= */
-
-function speakPlayer(player) {
-
-    if (
-        !("speechSynthesis" in window)
-    ) {
-        return;
-    }
-
-
-    /*
-     * Stop previous speech first.
-     * This prevents overlapping voices
-     * during fast taps.
-     */
-    window.speechSynthesis.cancel();
-
-
-    const text =
-        player === "messi"
-            ? "Messi"
-            : "Ronaldo";
-
-
-    const utterance =
-        new SpeechSynthesisUtterance(text);
-
-
-    /*
-     * Clear English pronunciation.
-     */
-    utterance.lang = "en-US";
-
-    /*
-     * Fast and energetic.
-     */
-    utterance.rate = 1.0;
-
-    utterance.pitch = 1.0;
-
-    utterance.volume = 1.0;
-
-
-    /*
-     * Speak immediately.
-     */
-    window.speechSynthesis.speak(
-        utterance
-    );
 }
 
 
@@ -175,6 +301,9 @@ function speakPlayer(player) {
 
 async function requestFullScreen() {
 
+    /*
+     * Already fullscreen.
+     */
     if (
         document.fullscreenElement ||
         document.webkitFullscreenElement
@@ -186,6 +315,7 @@ async function requestFullScreen() {
     try {
 
         if (
+            scoreboard &&
             scoreboard.requestFullscreen
         ) {
 
@@ -194,6 +324,7 @@ async function requestFullScreen() {
         }
 
         else if (
+            scoreboard &&
             scoreboard.webkitRequestFullscreen
         ) {
 
@@ -204,9 +335,9 @@ async function requestFullScreen() {
     } catch (error) {
 
         /*
-         * Some browsers/WebViews
-         * don't allow fullscreen.
-         * Scoreboard still works normally.
+         * Some browsers/WebViews block
+         * fullscreen. The scoreboard
+         * continues working normally.
          */
 
     }
@@ -229,15 +360,13 @@ async function tryLandscapeLock() {
             await screen.orientation.lock(
                 "landscape"
             );
-
         }
 
     } catch (error) {
 
         /*
-         * Orientation lock can be
-         * restricted by the browser.
-         * Physical rotation still works.
+         * Orientation lock is optional.
+         * Physical phone rotation still works.
          */
 
     }
@@ -250,6 +379,11 @@ async function tryLandscapeLock() {
 
 async function enterLiveDisplay() {
 
+    /*
+     * These are triggered by the user's
+     * tap, which is important for browser
+     * fullscreen permissions.
+     */
     await requestFullScreen();
 
     await tryLandscapeLock();
@@ -262,6 +396,9 @@ async function enterLiveDisplay() {
 
 function addVote(player) {
 
+    /*
+     * MESSI
+     */
     if (player === "messi") {
 
         messiScore += 1;
@@ -271,9 +408,12 @@ function addVote(player) {
         );
 
         speakPlayer("messi");
-
     }
 
+
+    /*
+     * RONALDO
+     */
     else if (player === "ronaldo") {
 
         ronaldoScore += 1;
@@ -283,15 +423,21 @@ function addVote(player) {
         );
 
         speakPlayer("ronaldo");
-
     }
 
+
+    /*
+     * Invalid player
+     */
     else {
 
         return;
     }
 
 
+    /*
+     * Update scores and crown.
+     */
     renderScores();
 }
 
@@ -304,8 +450,20 @@ messiSide.addEventListener(
     "click",
     function () {
 
+        /*
+         * Initialize speech from the
+         * user's actual tap.
+         */
+        initializeAudio();
+
+        /*
+         * Try fullscreen/landscape.
+         */
         enterLiveDisplay();
 
+        /*
+         * Add exactly ONE vote.
+         */
         addVote("messi");
     }
 );
@@ -319,8 +477,20 @@ ronaldoSide.addEventListener(
     "click",
     function () {
 
+        /*
+         * Initialize speech from the
+         * user's actual tap.
+         */
+        initializeAudio();
+
+        /*
+         * Try fullscreen/landscape.
+         */
         enterLiveDisplay();
 
+        /*
+         * Add exactly ONE vote.
+         */
         addVote("ronaldo");
     }
 );
@@ -335,28 +505,35 @@ resetButton.addEventListener(
     function (event) {
 
         /*
-         * Prevent reset click from
-         * affecting anything else.
+         * Don't let reset behave like
+         * another screen tap.
          */
         event.stopPropagation();
 
 
+        /*
+         * Reset both scores.
+         */
         messiScore = 0;
-
         ronaldoScore = 0;
 
 
         /*
-         * Stop any current voice.
+         * Stop current voice.
          */
-        if (
-            "speechSynthesis" in window
-        ) {
+        if (voiceSupported) {
 
-            window.speechSynthesis.cancel();
+            try {
+                window.speechSynthesis.cancel();
+            } catch (error) {
+                // Ignore.
+            }
         }
 
 
+        /*
+         * Remove crown and restore 00/00.
+         */
         renderScores();
     }
 );
@@ -370,10 +547,6 @@ window.addEventListener(
     "orientationchange",
     function () {
 
-        /*
-         * Re-render after the device
-         * changes orientation.
-         */
         requestAnimationFrame(
             renderScores
         );
@@ -397,7 +570,9 @@ window.addEventListener(
 
 
 /* =========================
-   INITIAL STATE
+   INITIAL PAGE LOAD
 ========================= */
+
+initializeAudio();
 
 renderScores();
