@@ -1,9 +1,12 @@
 "use strict";
 
 
-/* =========================================
-   GET HTML ELEMENTS
-========================================= */
+/* =========================
+   ELEMENTS
+========================= */
+
+const scoreboard =
+    document.getElementById("scoreboard");
 
 const messiSide =
     document.getElementById("messiSide");
@@ -11,13 +14,11 @@ const messiSide =
 const ronaldoSide =
     document.getElementById("ronaldoSide");
 
-
 const messiScoreElement =
     document.getElementById("messiScore");
 
 const ronaldoScoreElement =
     document.getElementById("ronaldoScore");
-
 
 const messiCrown =
     document.getElementById("messiCrown");
@@ -25,38 +26,25 @@ const messiCrown =
 const ronaldoCrown =
     document.getElementById("ronaldoCrown");
 
-
 const resetButton =
     document.getElementById("resetBtn");
 
 
-/* =========================================
+/* =========================
    SCORES
-========================================= */
+========================= */
 
 let messiScore = 0;
-
 let ronaldoScore = 0;
 
 
-/* =========================================
-   SCORE FORMAT
-========================================= */
-
-/*
-    0  -> 00
-    1  -> 01
-    2  -> 02
-    9  -> 09
-    10 -> 10
-    99 -> 99
-    100 -> 100
-*/
+/* =========================
+   FORMAT SCORE
+========================= */
 
 function formatScore(score) {
 
     if (score < 10) {
-
         return "0" + score;
     }
 
@@ -64,31 +52,20 @@ function formatScore(score) {
 }
 
 
-/* =========================================
-   UPDATE SCOREBOARD
-========================================= */
+/* =========================
+   UPDATE SCREEN
+========================= */
 
 function renderScores() {
 
-    /* Update numbers */
-
     messiScoreElement.textContent =
         formatScore(messiScore);
-
 
     ronaldoScoreElement.textContent =
         formatScore(ronaldoScore);
 
 
-    /* =====================================
-       CROWN LOGIC
-    ===================================== */
-
-    /*
-        Messi higher
-        -> Messi crown ON
-        -> Ronaldo crown OFF
-    */
+    /* Messi leading */
 
     if (messiScore > ronaldoScore) {
 
@@ -98,11 +75,7 @@ function renderScores() {
     }
 
 
-    /*
-        Ronaldo higher
-        -> Ronaldo crown ON
-        -> Messi crown OFF
-    */
+    /* Ronaldo leading */
 
     else if (ronaldoScore > messiScore) {
 
@@ -112,10 +85,7 @@ function renderScores() {
     }
 
 
-    /*
-        Same score
-        -> Both crowns OFF
-    */
+    /* Tie */
 
     else {
 
@@ -126,77 +96,195 @@ function renderScores() {
 }
 
 
-/* =========================================
+/* =========================
    SCORE ANIMATION
-========================================= */
+========================= */
 
 function animateScore(element) {
 
-    /*
-        Remove previous animation.
-        This makes fast consecutive taps
-        animate correctly.
-    */
-
     element.classList.remove("pop");
 
-
     /*
-        Force browser reflow so the animation
-        can restart even on rapid taps.
-    */
-
+     * Force browser reflow so the
+     * animation can restart every tap.
+     */
     void element.offsetWidth;
-
-
-    /*
-        Start animation again.
-    */
 
     element.classList.add("pop");
 }
 
 
-/* =========================================
+/* =========================
+   VOICE
+========================= */
+
+function speakPlayer(player) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+        return;
+    }
+
+
+    /*
+     * Stop previous speech first.
+     * This prevents overlapping voices
+     * during fast taps.
+     */
+    window.speechSynthesis.cancel();
+
+
+    const text =
+        player === "messi"
+            ? "Messi"
+            : "Ronaldo";
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+
+    /*
+     * Clear English pronunciation.
+     */
+    utterance.lang = "en-US";
+
+    /*
+     * Fast and energetic.
+     */
+    utterance.rate = 1.0;
+
+    utterance.pitch = 1.0;
+
+    utterance.volume = 1.0;
+
+
+    /*
+     * Speak immediately.
+     */
+    window.speechSynthesis.speak(
+        utterance
+    );
+}
+
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+async function requestFullScreen() {
+
+    if (
+        document.fullscreenElement ||
+        document.webkitFullscreenElement
+    ) {
+        return;
+    }
+
+
+    try {
+
+        if (
+            scoreboard.requestFullscreen
+        ) {
+
+            await scoreboard.requestFullscreen();
+
+        }
+
+        else if (
+            scoreboard.webkitRequestFullscreen
+        ) {
+
+            scoreboard.webkitRequestFullscreen();
+
+        }
+
+    } catch (error) {
+
+        /*
+         * Some browsers/WebViews
+         * don't allow fullscreen.
+         * Scoreboard still works normally.
+         */
+
+    }
+}
+
+
+/* =========================
+   LANDSCAPE LOCK
+========================= */
+
+async function tryLandscapeLock() {
+
+    try {
+
+        if (
+            screen.orientation &&
+            screen.orientation.lock
+        ) {
+
+            await screen.orientation.lock(
+                "landscape"
+            );
+
+        }
+
+    } catch (error) {
+
+        /*
+         * Orientation lock can be
+         * restricted by the browser.
+         * Physical rotation still works.
+         */
+
+    }
+}
+
+
+/* =========================
+   ENTER LIVE DISPLAY
+========================= */
+
+async function enterLiveDisplay() {
+
+    await requestFullScreen();
+
+    await tryLandscapeLock();
+}
+
+
+/* =========================
    ADD VOTE
-========================================= */
+========================= */
 
 function addVote(player) {
-
-
-    /* =====================================
-       MESSI
-    ===================================== */
 
     if (player === "messi") {
 
         messiScore += 1;
 
-
         animateScore(
             messiScoreElement
         );
+
+        speakPlayer("messi");
+
     }
-
-
-    /* =====================================
-       RONALDO
-    ===================================== */
 
     else if (player === "ronaldo") {
 
         ronaldoScore += 1;
 
-
         animateScore(
             ronaldoScoreElement
         );
+
+        speakPlayer("ronaldo");
+
     }
-
-
-    /*
-        Ignore anything unexpected.
-    */
 
     else {
 
@@ -204,70 +292,54 @@ function addVote(player) {
     }
 
 
-    /*
-        Update numbers + crown
-        immediately after the vote.
-    */
-
     renderScores();
 }
 
 
-/* =========================================
-   VOTE EVENTS
-========================================= */
-
-/*
-    VERY IMPORTANT:
-
-    We use ONLY "click".
-
-    We DO NOT use:
-
-        touchstart
-        touchend
-        pointerdown
-
-    for voting.
-
-    Therefore a normal phone tap
-    produces ONE vote.
-
-    1 tap  = +1
-    2 taps = +2
-    3 taps = +3
-*/
-
+/* =========================
+   MESSI TAP
+========================= */
 
 messiSide.addEventListener(
     "click",
     function () {
+
+        enterLiveDisplay();
 
         addVote("messi");
     }
 );
 
 
+/* =========================
+   RONALDO TAP
+========================= */
+
 ronaldoSide.addEventListener(
     "click",
     function () {
+
+        enterLiveDisplay();
 
         addVote("ronaldo");
     }
 );
 
 
-/* =========================================
+/* =========================
    RESET
-========================================= */
+========================= */
 
 resetButton.addEventListener(
     "click",
-    function () {
+    function (event) {
 
         /*
-            Reset both players.
-        */
+         * Prevent reset click from
+         * affecting anything else.
+         */
+        event.stopPropagation();
+
 
         messiScore = 0;
 
@@ -275,26 +347,57 @@ resetButton.addEventListener(
 
 
         /*
-            Update screen.
-        */
+         * Stop any current voice.
+         */
+        if (
+            "speechSynthesis" in window
+        ) {
+
+            window.speechSynthesis.cancel();
+        }
+
 
         renderScores();
     }
 );
 
 
-/* =========================================
+/* =========================
+   ORIENTATION CHANGE
+========================= */
+
+window.addEventListener(
+    "orientationchange",
+    function () {
+
+        /*
+         * Re-render after the device
+         * changes orientation.
+         */
+        requestAnimationFrame(
+            renderScores
+        );
+    }
+);
+
+
+/* =========================
+   RESIZE
+========================= */
+
+window.addEventListener(
+    "resize",
+    function () {
+
+        requestAnimationFrame(
+            renderScores
+        );
+    }
+);
+
+
+/* =========================
    INITIAL STATE
-========================================= */
-
-/*
-    When the page starts:
-
-        Messi    = 00
-        Ronaldo  = 00
-        Crown    = none
-
-    Nothing is automatically added.
-*/
+========================= */
 
 renderScores();
