@@ -1,107 +1,89 @@
-/* =========================================
-   MESSI VS RONALDO LIVE VOTE
-   FINAL VERSION
-========================================= */
-
-
-/* =========================================
-   BASIC RESET
-========================================= */
-
 * {
     box-sizing: border-box;
-
     margin: 0;
     padding: 0;
 
     -webkit-tap-highlight-color: transparent;
 }
 
-
 html,
 body {
     width: 100%;
     height: 100%;
+
+    overflow: hidden;
 }
 
-
 body {
-    background: #050505;
-
-    color: #ffffff;
+    background: #000;
+    color: #fff;
 
     font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-    overflow: hidden;
-
     user-select: none;
     -webkit-user-select: none;
+
+    overscroll-behavior: none;
 }
 
 
-/* =========================================
+/* =========================
    MAIN APP
-========================================= */
+========================= */
 
 .app {
-    width: 100%;
-    min-height: 100vh;
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100dvh;
 
     display: flex;
-
-    flex-direction: column;
 
     align-items: center;
     justify-content: center;
 
-    gap: 12px;
+    background: #000;
 
-    padding: 12px;
+    overflow: hidden;
 }
 
 
-/* =========================================
-   16:9 SCOREBOARD
-========================================= */
+/* =========================
+   SCOREBOARD
+========================= */
 
 .scoreboard {
     position: relative;
 
-    width: min(
-        100%,
-        calc((100vh - 75px) * 16 / 9)
-    );
-
-    aspect-ratio: 16 / 9;
+    width: 100vw;
+    height: 100dvh;
 
     display: flex;
 
     overflow: hidden;
 
-    background: #111111;
-
-    border-radius: 14px;
-
-    box-shadow:
-        0 18px 50px rgba(0, 0, 0, 0.70),
-        0 0 0 1px rgba(255, 255, 255, 0.10);
+    background: #111;
 
     isolation: isolate;
 }
 
 
-/* =========================================
-   EACH PLAYER SIDE
-========================================= */
+/* =========================
+   PLAYER SIDE
+========================= */
 
 .player-side {
     position: relative;
 
     width: 50%;
     height: 100%;
+
+    flex: 0 0 50%;
 
     border: 0;
     outline: none;
@@ -117,70 +99,81 @@ body {
 
     overflow: hidden;
 
+    touch-action: manipulation;
+
     transition:
-        filter 0.10s ease,
-        transform 0.10s ease;
+        filter 0.08s ease,
+        transform 0.08s ease;
 }
 
 
-/* =========================================
-   MESSI BACKGROUND
-========================================= */
+/* =========================
+   MESSI
+========================= */
 
 .messi-side {
     background:
         radial-gradient(
-            circle at 50% 28%,
-            rgba(255, 255, 255, 0.12),
+            circle at 50% 22%,
+            rgba(255,255,255,0.18),
             transparent 34%
         ),
-
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(0,0,0,0.18),
+            transparent 55%
+        ),
         linear-gradient(
             145deg,
-            #ff3d6e 0%,
-            #e40048 48%,
-            #a50038 100%
+            #ff4774 0%,
+            #ed004b 45%,
+            #a9003b 100%
         );
+
+    color: #fff;
 }
 
 
-/* =========================================
-   RONALDO BACKGROUND
-========================================= */
+/* =========================
+   RONALDO
+========================= */
 
 .ronaldo-side {
     background:
         radial-gradient(
-            circle at 50% 28%,
-            rgba(255, 255, 255, 0.18),
+            circle at 50% 22%,
+            rgba(255,255,255,0.28),
             transparent 34%
         ),
-
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(0,0,0,0.16),
+            transparent 55%
+        ),
         linear-gradient(
             145deg,
-            #fff13d 0%,
-            #ffd000 48%,
-            #d99c00 100%
+            #fff44a 0%,
+            #ffd400 48%,
+            #d99a00 100%
         );
 
-    color: #111111;
+    color: #111;
 }
 
 
-/* =========================================
-   TAP FEEDBACK
-========================================= */
+/* =========================
+   TAP EFFECT
+========================= */
 
 .player-side:active {
     filter: brightness(0.88);
-
     transform: scale(0.997);
 }
 
 
-/* =========================================
+/* =========================
    PLAYER CONTENT
-========================================= */
+========================= */
 
 .player-content {
     width: 100%;
@@ -199,32 +192,27 @@ body {
 }
 
 
-/* =========================================
+/* =========================
    CROWN
-========================================= */
+========================= */
 
 .crown {
-    height: clamp(28px, 5vw, 72px);
+    height: clamp(32px, 7vw, 82px);
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    font-size: clamp(
-        25px,
-        5vw,
-        70px
-    );
+    font-size: clamp(28px, 7vw, 76px);
 
     line-height: 1;
 
     opacity: 0;
-
     visibility: hidden;
 
     transform:
-        translateY(8px)
+        translateY(10px)
         scale(0.65);
 
     transition:
@@ -234,13 +222,12 @@ body {
 
     filter:
         drop-shadow(
-            0 5px 5px
-            rgba(0, 0, 0, 0.35)
+            0 5px 7px rgba(0,0,0,0.38)
         );
 }
 
 
-/* Crown becomes visible */
+/* Crown visible */
 
 .crown.show {
     opacity: 1;
@@ -253,15 +240,15 @@ body {
 }
 
 
-/* =========================================
+/* =========================
    PLAYER NAME
-========================================= */
+========================= */
 
 .player-name {
     font-size: clamp(
-        22px,
-        4vw,
-        62px
+        24px,
+        5vw,
+        68px
     );
 
     font-weight: 900;
@@ -274,48 +261,46 @@ body {
 
     text-shadow:
         0 4px 14px
-        rgba(0, 0, 0, 0.25);
+        rgba(0,0,0,0.28);
 }
 
 
-/* =========================================
-   SCORE NUMBER
-========================================= */
+/* =========================
+   SCORE
+========================= */
 
 .score {
-    margin-top: 2%;
+    margin-top: 2.5%;
 
     font-size: clamp(
-        70px,
-        13vw,
-        210px
+        80px,
+        15vw,
+        230px
     );
 
     font-weight: 900;
 
-    line-height: 0.90;
+    line-height: 0.88;
 
     letter-spacing: -0.045em;
 
     font-variant-numeric: tabular-nums;
 
     text-shadow:
-        0 7px 20px
-        rgba(0, 0, 0, 0.30);
+        0 8px 22px
+        rgba(0,0,0,0.30);
 
     transform-origin: center;
 }
 
 
-/* =========================================
-   NUMBER POP ANIMATION
-========================================= */
+/* =========================
+   SCORE POP
+========================= */
 
 .score.pop {
-    animation:
-        scorePop 0.16s ease-out;
+    animation: scorePop 0.16s ease-out;
 }
-
 
 @keyframes scorePop {
 
@@ -333,15 +318,16 @@ body {
 }
 
 
-/* =========================================
-   CENTER DIVIDER
-========================================= */
+/* =========================
+   CENTER LINE
+========================= */
 
 .center-line {
     position: absolute;
 
     top: 0;
     bottom: 0;
+
     left: 50%;
 
     width: 2px;
@@ -350,11 +336,11 @@ body {
         translateX(-50%);
 
     background:
-        rgba(255, 255, 255, 0.78);
+        rgba(255,255,255,0.85);
 
     box-shadow:
-        0 0 12px
-        rgba(255, 255, 255, 0.35);
+        0 0 14px
+        rgba(255,255,255,0.42);
 
     pointer-events: none;
 
@@ -362,25 +348,99 @@ body {
 }
 
 
-/* =========================================
-   RESET BUTTON
-========================================= */
+/* =========================
+   CHANNEL BRAND
+========================= */
 
-.reset-button {
-    border: 1px solid
-        rgba(255, 255, 255, 0.12);
+.channel-brand {
+    position: absolute;
 
-    background: #151515;
+    left: 50%;
 
-    color:
-        rgba(255, 255, 255, 0.70);
+    bottom:
+        max(
+            12px,
+            env(safe-area-inset-bottom)
+        );
 
-    padding:
-        7px 16px;
+    transform:
+        translateX(-50%);
+
+    z-index: 30;
+
+    padding: 6px 13px;
 
     border-radius: 999px;
 
-    font-size: 10px;
+    background:
+        rgba(0,0,0,0.30);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.16);
+
+    backdrop-filter:
+        blur(8px);
+
+    -webkit-backdrop-filter:
+        blur(8px);
+
+    color:
+        rgba(255,255,255,0.92);
+
+    font-size:
+        clamp(9px, 1.5vw, 16px);
+
+    font-weight: 800;
+
+    letter-spacing: 0.04em;
+
+    white-space: nowrap;
+
+    text-shadow:
+        0 2px 5px
+        rgba(0,0,0,0.45);
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   RESET BUTTON
+========================= */
+
+.reset-button {
+    position: fixed;
+
+    left: 50%;
+
+    bottom:
+        max(
+            5px,
+            env(safe-area-inset-bottom)
+        );
+
+    transform:
+        translateX(-50%);
+
+    z-index: 100;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.14);
+
+    background:
+        rgba(15,15,15,0.82);
+
+    color:
+        rgba(255,255,255,0.72);
+
+    padding:
+        5px 13px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
 
     font-weight: 800;
 
@@ -389,116 +449,105 @@ body {
     cursor: pointer;
 
     outline: none;
-}
 
+    opacity: 0.75;
+}
 
 .reset-button:active {
-    transform: scale(0.95);
+    transform:
+        translateX(-50%)
+        scale(0.94);
 
-    background: #252525;
+    background: #222;
 }
 
 
-/* =========================================
-   SMALL SCREEN
-========================================= */
+/* =========================
+   LANDSCAPE
+   FULL SCREEN 50/50
+========================= */
 
-@media (max-width: 700px) {
+@media (orientation: landscape) {
 
     .app {
-        padding: 7px;
+        width: 100vw;
+        height: 100dvh;
 
-        gap: 7px;
+        padding: 0;
     }
-
 
     .scoreboard {
-        width: 100%;
+        width: 100vw;
+        height: 100dvh;
 
-        border-radius: 10px;
+        border-radius: 0;
     }
 
+    .player-side {
+        width: 50vw;
+        height: 100dvh;
+
+        flex-basis: 50vw;
+    }
+
+    .channel-brand {
+        bottom:
+            max(
+                10px,
+                env(safe-area-inset-bottom)
+            );
+    }
+}
+
+
+/* =========================
+   PORTRAIT
+========================= */
+
+@media (orientation: portrait) {
+
+    .scoreboard {
+        width: 100vw;
+        height: 100dvh;
+
+        border-radius: 0;
+    }
 
     .player-name {
-        letter-spacing: 0.06em;
-    }
-
-
-    .score {
-        margin-top: 3%;
-    }
-
-
-    .crown {
-        height: 26px;
-    }
-
-
-    .reset-button {
-        padding:
-            5px 12px;
-
-        font-size: 8px;
-    }
-}
-
-
-/* =========================================
-   LANDSCAPE PHONE
-========================================= */
-
-@media (
-    orientation: landscape
-) and (
-    max-height: 600px
-) {
-
-    .app {
-        padding: 5px;
-
-        gap: 5px;
-    }
-
-
-    .scoreboard {
-        width: min(
-            100vw,
-            calc((100vh - 38px) * 16 / 9)
+        font-size: clamp(
+            20px,
+            8vw,
+            50px
         );
     }
 
-
-    .reset-button {
-        padding:
-            4px 10px;
-
-        font-size: 8px;
+    .score {
+        font-size: clamp(
+            70px,
+            18vw,
+            150px
+        );
     }
 
-
-    .crown {
-        height: 24px;
+    .channel-brand {
+        font-size: 9px;
     }
 }
 
 
-/* =========================================
-   REDUCE MOTION
-========================================= */
+/* =========================
+   REDUCED MOTION
+========================= */
 
-@media (
-    prefers-reduced-motion: reduce
-) {
+@media (prefers-reduced-motion: reduce) {
 
     .player-side {
         transition: none;
     }
 
-
     .crown {
         transition: none;
     }
-
 
     .score.pop {
         animation: none;
