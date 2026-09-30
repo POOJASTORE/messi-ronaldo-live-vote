@@ -1,0 +1,12 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Goat Arena Live",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Goat Arena",
+  "start_url": "/",
+  "theme_color": "#000000",
+  "id": "Goat Arena Live"
+}
