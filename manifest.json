@@ -1,0 +1,12 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Messi vs Ronaldo Live Vote",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Messi Ronaldo",
+  "start_url": "/",
+  "theme_color": "#050505",
+  "description": "Messi vs Ronaldo live voting scoreboard for live streams."
+}
