@@ -1,134 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     >
 
-    <meta
-        name="theme-color"
-        content="#050505"
-    >
+    <meta name="theme-color" content="#000000">
 
-    <title>Messi vs Ronaldo Live Vote</title>
+    <title>Goat Arena Live</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <main class="app">
 
-        <!-- =========================
-             MAIN SCOREBOARD
-        ========================== -->
-
         <section
+            id="scoreboard"
             class="scoreboard"
-            aria-label="Messi vs Ronaldo Scoreboard"
+            aria-label="Messi vs Ronaldo Live Scoreboard"
         >
 
-            <!-- =====================
-                 MESSI SIDE
-            ====================== -->
-
+            <!-- MESSI -->
             <button
                 id="messiSide"
                 class="player-side messi-side"
                 type="button"
                 aria-label="Vote for Messi"
             >
-
                 <div class="player-content">
 
-                    <!-- Crown -->
                     <div
                         id="messiCrown"
                         class="crown"
                         aria-hidden="true"
-                    >
-                        👑
-                    </div>
+                    >👑</div>
 
-                    <!-- Name -->
                     <div class="player-name">
                         MESSI
                     </div>
 
-                    <!-- Score -->
                     <div
                         id="messiScore"
                         class="score"
-                    >
-                        00
-                    </div>
+                    >00</div>
 
                 </div>
-
             </button>
 
 
-            <!-- =====================
-                 RONALDO SIDE
-            ====================== -->
-
+            <!-- RONALDO -->
             <button
                 id="ronaldoSide"
                 class="player-side ronaldo-side"
                 type="button"
                 aria-label="Vote for Ronaldo"
             >
-
                 <div class="player-content">
 
-                    <!-- Crown -->
                     <div
                         id="ronaldoCrown"
                         class="crown"
                         aria-hidden="true"
-                    >
-                        👑
-                    </div>
+                    >👑</div>
 
-                    <!-- Name -->
                     <div class="player-name">
                         RONALDO
                     </div>
 
-                    <!-- Score -->
                     <div
                         id="ronaldoScore"
                         class="score"
-                    >
-                        00
-                    </div>
+                    >00</div>
 
                 </div>
-
             </button>
 
 
-            <!-- CENTER LINE -->
-
+            <!-- CENTER DIVIDER -->
             <div
                 class="center-line"
                 aria-hidden="true"
             ></div>
 
+
+            <!-- CHANNEL BRAND -->
+            <div
+                class="channel-brand"
+                aria-label="Goat Arena Live"
+            >
+                🐐 Goat Arena Live
+            </div>
+
         </section>
 
 
-        <!-- =========================
-             RESET CONTROL
-        ========================== -->
-
+        <!-- RESET -->
         <button
             id="resetBtn"
             class="reset-button"
@@ -140,10 +111,7 @@
     </main>
 
 
-    <!-- JAVASCRIPT -->
-
     <script src="script.js"></script>
 
 </body>
-
 </html>
