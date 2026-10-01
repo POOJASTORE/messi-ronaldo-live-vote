@@ -1,21 +1,33 @@
 "use strict";
 
+
 /* =========================
    ELEMENTS
 ========================= */
 
-const scoreboard = document.getElementById("scoreboard");
+const scoreboard =
+    document.getElementById("scoreboard");
 
-const messiSide = document.getElementById("messiSide");
-const ronaldoSide = document.getElementById("ronaldoSide");
+const messiSide =
+    document.getElementById("messiSide");
 
-const messiScoreElement = document.getElementById("messiScore");
-const ronaldoScoreElement = document.getElementById("ronaldoScore");
+const ronaldoSide =
+    document.getElementById("ronaldoSide");
 
-const messiCrown = document.getElementById("messiCrown");
-const ronaldoCrown = document.getElementById("ronaldoCrown");
+const messiScoreElement =
+    document.getElementById("messiScore");
 
-const resetButton = document.getElementById("resetBtn");
+const ronaldoScoreElement =
+    document.getElementById("ronaldoScore");
+
+const messiCrown =
+    document.getElementById("messiCrown");
+
+const ronaldoCrown =
+    document.getElementById("ronaldoCrown");
+
+const resetButton =
+    document.getElementById("resetBtn");
 
 
 /* =========================
@@ -27,7 +39,7 @@ let ronaldoScore = 0;
 
 
 /* =========================
-   VOICE ENGINE
+   VOICE SUPPORT
 ========================= */
 
 const voiceSupported =
@@ -47,8 +59,10 @@ function loadVoices() {
         return;
     }
 
-    voices = window.speechSynthesis.getVoices();
+    voices =
+        window.speechSynthesis.getVoices();
 }
+
 
 if (voiceSupported) {
 
@@ -57,11 +71,7 @@ if (voiceSupported) {
     if ("onvoiceschanged" in window.speechSynthesis) {
 
         window.speechSynthesis.onvoiceschanged =
-            function () {
-
-                loadVoices();
-
-            };
+            loadVoices;
     }
 }
 
@@ -76,32 +86,46 @@ function getEnglishVoice() {
         return null;
     }
 
+
     if (!voices.length) {
+
         voices =
             window.speechSynthesis.getVoices();
     }
 
-    let voice = voices.find(function (item) {
 
-        return (
-            item.lang &&
-            item.lang.toLowerCase() === "en-us"
-        );
+    /* Prefer US English */
 
-    });
+    let voice =
+        voices.find(function (item) {
+
+            return (
+                item.lang &&
+                item.lang.toLowerCase() === "en-us"
+            );
+
+        });
+
 
     if (voice) {
         return voice;
     }
 
-    voice = voices.find(function (item) {
 
-        return (
-            item.lang &&
-            item.lang.toLowerCase().startsWith("en")
-        );
+    /* Otherwise any English voice */
 
-    });
+    voice =
+        voices.find(function (item) {
+
+            return (
+                item.lang &&
+                item.lang
+                    .toLowerCase()
+                    .startsWith("en")
+            );
+
+        });
+
 
     return voice || null;
 }
@@ -117,41 +141,49 @@ function speakPlayer(player) {
         return;
     }
 
+
     const text =
         player === "messi"
             ? "Messi"
             : "Ronaldo";
 
 
+    /*
+     * Stop previous speech so
+     * voices never overlap.
+     */
+
     try {
 
         window.speechSynthesis.cancel();
 
     } catch (error) {
-        // Ignore speech cancellation errors.
+
+        // Ignore speech errors.
     }
 
 
     const utterance =
         new SpeechSynthesisUtterance(text);
 
+
     utterance.lang = "en-US";
 
-    utterance.volume = 1;
+    utterance.volume = 1.0;
 
     utterance.rate = 0.95;
 
-    utterance.pitch = 1;
+    utterance.pitch = 1.0;
 
 
     const englishVoice =
         getEnglishVoice();
 
+
     if (englishVoice) {
 
         utterance.voice =
             englishVoice;
-
     }
 
 
@@ -162,7 +194,8 @@ function speakPlayer(player) {
         );
 
     } catch (error) {
-        // Scoreboard continues normally.
+
+        // Scoreboard continues working.
     }
 }
 
@@ -209,28 +242,33 @@ function renderScores() {
         formatScore(ronaldoScore);
 
 
+    /* Messi leading */
+
     if (messiScore > ronaldoScore) {
 
         messiCrown.classList.add("show");
 
         ronaldoCrown.classList.remove("show");
-
     }
+
+
+    /* Ronaldo leading */
 
     else if (ronaldoScore > messiScore) {
 
         ronaldoCrown.classList.add("show");
 
         messiCrown.classList.remove("show");
-
     }
+
+
+    /* Tie */
 
     else {
 
         messiCrown.classList.remove("show");
 
         ronaldoCrown.classList.remove("show");
-
     }
 }
 
@@ -242,6 +280,11 @@ function renderScores() {
 function animateScore(element) {
 
     element.classList.remove("pop");
+
+    /*
+     * Force browser reflow so the
+     * animation works on every tap.
+     */
 
     void element.offsetWidth;
 
@@ -261,6 +304,7 @@ async function requestFullScreen() {
     ) {
         return;
     }
+
 
     try {
 
@@ -283,7 +327,12 @@ async function requestFullScreen() {
         }
 
     } catch (error) {
-        // Fullscreen is optional.
+
+        /*
+         * Fullscreen is optional.
+         * Scoreboard continues normally.
+         */
+
     }
 }
 
@@ -304,11 +353,15 @@ async function tryLandscapeLock() {
             await screen.orientation.lock(
                 "landscape"
             );
-
         }
 
     } catch (error) {
-        // Orientation lock is optional.
+
+        /*
+         * Some browsers don't allow
+         * orientation locking.
+         */
+
     }
 }
 
@@ -331,6 +384,8 @@ async function enterLiveDisplay() {
 
 function addVote(player) {
 
+    /* Messi */
+
     if (player === "messi") {
 
         messiScore += 1;
@@ -340,8 +395,10 @@ function addVote(player) {
         );
 
         speakPlayer("messi");
-
     }
+
+
+    /* Ronaldo */
 
     else if (player === "ronaldo") {
 
@@ -352,14 +409,16 @@ function addVote(player) {
         );
 
         speakPlayer("ronaldo");
-
     }
+
+
+    /* Invalid player */
 
     else {
 
         return;
-
     }
+
 
     renderScores();
 }
@@ -373,12 +432,26 @@ messiSide.addEventListener(
     "click",
     function () {
 
+        /*
+         * Initialize speech from
+         * actual user interaction.
+         */
+
         initializeAudio();
+
+
+        /*
+         * Try fullscreen and landscape.
+         */
 
         enterLiveDisplay();
 
-        addVote("messi");
 
+        /*
+         * Add exactly one score.
+         */
+
+        addVote("messi");
     }
 );
 
@@ -391,12 +464,26 @@ ronaldoSide.addEventListener(
     "click",
     function () {
 
+        /*
+         * Initialize speech from
+         * actual user interaction.
+         */
+
         initializeAudio();
+
+
+        /*
+         * Try fullscreen and landscape.
+         */
 
         enterLiveDisplay();
 
-        addVote("ronaldo");
 
+        /*
+         * Add exactly one score.
+         */
+
+        addVote("ronaldo");
     }
 );
 
@@ -409,14 +496,26 @@ resetButton.addEventListener(
     "click",
     function (event) {
 
-        event.preventDefault();
+        /*
+         * Prevent reset from behaving
+         * like a player tap.
+         */
 
         event.stopPropagation();
+
+
+        /*
+         * Reset both scores.
+         */
 
         messiScore = 0;
 
         ronaldoScore = 0;
 
+
+        /*
+         * Stop current voice.
+         */
 
         if (voiceSupported) {
 
@@ -425,14 +524,18 @@ resetButton.addEventListener(
                 window.speechSynthesis.cancel();
 
             } catch (error) {
-                // Ignore.
-            }
 
+                // Ignore speech errors.
+            }
         }
 
 
-        renderScores();
+        /*
+         * Restore 00 / 00
+         * and remove crowns.
+         */
 
+        renderScores();
     }
 );
 
@@ -448,7 +551,6 @@ window.addEventListener(
         requestAnimationFrame(
             renderScores
         );
-
     }
 );
 
@@ -464,13 +566,12 @@ window.addEventListener(
         requestAnimationFrame(
             renderScores
         );
-
     }
 );
 
 
 /* =========================
-   INITIAL PAGE LOAD
+   INITIAL LOAD
 ========================= */
 
 initializeAudio();
