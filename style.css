@@ -167,7 +167,9 @@ body {
 
 .player-side:active {
     filter: brightness(0.88);
-    transform: scale(0.997);
+
+    transform:
+        scale(0.997);
 }
 
 
@@ -197,18 +199,29 @@ body {
 ========================= */
 
 .crown {
-    height: clamp(32px, 7vw, 82px);
+    height:
+        clamp(
+            32px,
+            7vw,
+            82px
+        );
 
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    font-size: clamp(28px, 7vw, 76px);
+    font-size:
+        clamp(
+            28px,
+            7vw,
+            76px
+        );
 
     line-height: 1;
 
     opacity: 0;
+
     visibility: hidden;
 
     transform:
@@ -222,12 +235,10 @@ body {
 
     filter:
         drop-shadow(
-            0 5px 7px rgba(0,0,0,0.38)
+            0 5px 7px
+            rgba(0,0,0,0.38)
         );
 }
-
-
-/* Crown visible */
 
 .crown.show {
     opacity: 1;
@@ -245,11 +256,12 @@ body {
 ========================= */
 
 .player-name {
-    font-size: clamp(
-        24px,
-        5vw,
-        68px
-    );
+    font-size:
+        clamp(
+            24px,
+            5vw,
+            68px
+        );
 
     font-weight: 900;
 
@@ -272,11 +284,12 @@ body {
 .score {
     margin-top: 2.5%;
 
-    font-size: clamp(
-        80px,
-        15vw,
-        230px
-    );
+    font-size:
+        clamp(
+            80px,
+            15vw,
+            230px
+        );
 
     font-weight: 900;
 
@@ -284,7 +297,8 @@ body {
 
     letter-spacing: -0.045em;
 
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric:
+        tabular-nums;
 
     text-shadow:
         0 8px 22px
@@ -299,7 +313,8 @@ body {
 ========================= */
 
 .score.pop {
-    animation: scorePop 0.16s ease-out;
+    animation:
+        scorePop 0.16s ease-out;
 }
 
 @keyframes scorePop {
@@ -349,35 +364,97 @@ body {
 
 
 /* =========================
-   CHANNEL BRAND
+   BRAND AREA
+   LOGO
+   GOAT ARENA LIVE
+   RESET
 ========================= */
 
-.channel-brand {
+.brand-area {
     position: absolute;
 
     left: 50%;
 
-    bottom:
+    top:
         max(
-            12px,
-            env(safe-area-inset-bottom)
+            14px,
+            env(safe-area-inset-top)
         );
 
     transform:
         translateX(-50%);
 
-    z-index: 30;
+    z-index: 100;
 
-    padding: 6px 13px;
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: flex-start;
+
+    gap: 7px;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   CHANNEL LOGO
+========================= */
+
+.channel-logo {
+    display: block;
+
+    width:
+        clamp(
+            38px,
+            6vw,
+            68px
+        );
+
+    height:
+        clamp(
+            38px,
+            6vw,
+            68px
+        );
+
+    object-fit: contain;
+
+    object-position: center;
+
+    opacity: 0.82;
+
+    filter:
+        drop-shadow(
+            0 3px 7px
+            rgba(0,0,0,0.45)
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   CHANNEL BRAND
+========================= */
+
+.channel-brand {
+    position: relative;
+
+    padding:
+        7px 16px;
 
     border-radius: 999px;
 
     background:
-        rgba(0,0,0,0.30);
+        rgba(0,0,0,0.34);
 
     border:
         1px solid
-        rgba(255,255,255,0.16);
+        rgba(255,255,255,0.18);
 
     backdrop-filter:
         blur(8px);
@@ -386,20 +463,26 @@ body {
         blur(8px);
 
     color:
-        rgba(255,255,255,0.92);
+        rgba(255,255,255,0.96);
 
     font-size:
-        clamp(9px, 1.5vw, 16px);
+        clamp(
+            12px,
+            2vw,
+            20px
+        );
 
-    font-weight: 800;
+    font-weight: 900;
 
-    letter-spacing: 0.04em;
+    letter-spacing: 0.055em;
+
+    line-height: 1;
 
     white-space: nowrap;
 
     text-shadow:
-        0 2px 5px
-        rgba(0,0,0,0.45);
+        0 2px 6px
+        rgba(0,0,0,0.50);
 
     pointer-events: none;
 }
@@ -410,39 +493,45 @@ body {
 ========================= */
 
 .reset-button {
-    position: fixed;
+    position: relative;
 
-    left: 50%;
-
-    bottom:
-        max(
-            5px,
-            env(safe-area-inset-bottom)
+    min-width:
+        clamp(
+            52px,
+            7vw,
+            76px
         );
 
-    transform:
-        translateX(-50%);
+    min-height:
+        clamp(
+            34px,
+            5vw,
+            48px
+        );
 
-    z-index: 100;
+    padding:
+        7px 14px;
 
     border:
         1px solid
-        rgba(255,255,255,0.14);
-
-    background:
-        rgba(15,15,15,0.82);
-
-    color:
-        rgba(255,255,255,0.72);
-
-    padding:
-        5px 13px;
+        rgba(255,255,255,0.28);
 
     border-radius: 999px;
 
-    font-size: 9px;
+    background:
+        rgba(10,10,10,0.82);
 
-    font-weight: 800;
+    color:
+        rgba(255,255,255,0.92);
+
+    font-size:
+        clamp(
+            8px,
+            1.25vw,
+            12px
+        );
+
+    font-weight: 900;
 
     letter-spacing: 0.10em;
 
@@ -450,13 +539,21 @@ body {
 
     outline: none;
 
-    opacity: 0.75;
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,0.35);
+
+    pointer-events: auto;
+
+    touch-action: manipulation;
+
+    transition:
+        transform 0.08s ease,
+        background 0.08s ease;
 }
 
 .reset-button:active {
-    transform:
-        translateX(-50%)
-        scale(0.94);
+    transform: scale(0.93);
 
     background: #222;
 }
@@ -464,7 +561,6 @@ body {
 
 /* =========================
    LANDSCAPE
-   FULL SCREEN 50/50
 ========================= */
 
 @media (orientation: landscape) {
@@ -490,11 +586,38 @@ body {
         flex-basis: 50vw;
     }
 
-    .channel-brand {
-        bottom:
+    .brand-area {
+        top:
             max(
                 10px,
-                env(safe-area-inset-bottom)
+                env(safe-area-inset-top)
+            );
+
+        gap: 6px;
+    }
+
+    .channel-logo {
+        width:
+            clamp(
+                36px,
+                5vw,
+                62px
+            );
+
+        height:
+            clamp(
+                36px,
+                5vw,
+                62px
+            );
+    }
+
+    .channel-brand {
+        font-size:
+            clamp(
+                11px,
+                1.6vw,
+                18px
             );
     }
 }
@@ -514,23 +637,53 @@ body {
     }
 
     .player-name {
-        font-size: clamp(
-            20px,
-            8vw,
-            50px
-        );
+        font-size:
+            clamp(
+                20px,
+                8vw,
+                50px
+            );
     }
 
     .score {
-        font-size: clamp(
-            70px,
-            18vw,
-            150px
-        );
+        font-size:
+            clamp(
+                70px,
+                18vw,
+                150px
+            );
+    }
+
+    .brand-area {
+        top:
+            max(
+                12px,
+                env(safe-area-inset-top)
+            );
+
+        gap: 6px;
+    }
+
+    .channel-logo {
+        width: 42px;
+        height: 42px;
     }
 
     .channel-brand {
+        padding:
+            6px 12px;
+
         font-size: 9px;
+    }
+
+    .reset-button {
+        min-width: 54px;
+        min-height: 34px;
+
+        padding:
+            6px 12px;
+
+        font-size: 8px;
     }
 }
 
@@ -551,5 +704,9 @@ body {
 
     .score.pop {
         animation: none;
+    }
+
+    .reset-button {
+        transition: none;
     }
 }
