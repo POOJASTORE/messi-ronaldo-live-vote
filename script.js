@@ -37,11 +37,10 @@ const voiceSupported =
 let voices = [];
 
 
-/*
- * Load available voices.
- * Some Android browsers load them
- * slightly after the page opens.
- */
+/* =========================
+   LOAD VOICES
+========================= */
+
 function loadVoices() {
 
     if (!voiceSupported) {
@@ -51,18 +50,18 @@ function loadVoices() {
     voices = window.speechSynthesis.getVoices();
 }
 
-
-/*
- * Android/Chrome can fire this event
- * when voices become available.
- */
 if (voiceSupported) {
 
     loadVoices();
 
     if ("onvoiceschanged" in window.speechSynthesis) {
+
         window.speechSynthesis.onvoiceschanged =
-            loadVoices;
+            function () {
+
+                loadVoices();
+
+            };
     }
 }
 
@@ -73,36 +72,35 @@ if (voiceSupported) {
 
 function getEnglishVoice() {
 
+    if (!voiceSupported) {
+        return null;
+    }
+
     if (!voices.length) {
         voices =
             window.speechSynthesis.getVoices();
     }
 
-    /*
-     * Prefer US English.
-     */
     let voice = voices.find(function (item) {
+
         return (
             item.lang &&
             item.lang.toLowerCase() === "en-us"
         );
+
     });
 
     if (voice) {
         return voice;
     }
 
-
-    /*
-     * Otherwise use any English voice.
-     */
     voice = voices.find(function (item) {
+
         return (
             item.lang &&
-            item.lang
-                .toLowerCase()
-                .startsWith("en")
+            item.lang.toLowerCase().startsWith("en")
         );
+
     });
 
     return voice || null;
@@ -125,74 +123,47 @@ function speakPlayer(player) {
             : "Ronaldo";
 
 
-    /*
-     * Stop previous voice.
-     * This prevents overlapping audio.
-     */
     try {
+
         window.speechSynthesis.cancel();
+
     } catch (error) {
-        // Ignore speech engine errors.
+        // Ignore speech cancellation errors.
     }
 
 
-    const speakNow = function () {
+    const utterance =
+        new SpeechSynthesisUtterance(text);
 
-        const utterance =
-            new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
 
+    utterance.volume = 1;
 
-        /*
-         * Clear English pronunciation.
-         */
-        utterance.lang = "en-US";
+    utterance.rate = 0.95;
 
-
-        /*
-         * Full available speech volume.
-         */
-        utterance.volume = 1.0;
+    utterance.pitch = 1;
 
 
-        /*
-         * Normal-fast, clear speech.
-         */
-        utterance.rate = 0.95;
+    const englishVoice =
+        getEnglishVoice();
+
+    if (englishVoice) {
+
+        utterance.voice =
+            englishVoice;
+
+    }
 
 
-        /*
-         * Natural voice pitch.
-         */
-        utterance.pitch = 1.0;
+    try {
 
+        window.speechSynthesis.speak(
+            utterance
+        );
 
-        const englishVoice =
-            getEnglishVoice();
-
-        if (englishVoice) {
-            utterance.voice =
-                englishVoice;
-        }
-
-
-        /*
-         * Speak.
-         */
-        try {
-            window.speechSynthesis.speak(
-                utterance
-            );
-        } catch (error) {
-            // Keep scoreboard working.
-        }
-    };
-
-
-    /*
-     * Give Android speech engine a tiny
-     * moment after cancel().
-     */
-    setTimeout(speakNow, 30);
+    } catch (error) {
+        // Scoreboard continues normally.
+    }
 }
 
 
@@ -206,13 +177,8 @@ function initializeAudio() {
         return;
     }
 
-    /*
-     * Calling getVoices() helps initialize
-     * the Android speech engine.
-     */
     voices =
         window.speechSynthesis.getVoices();
-
 }
 
 
@@ -243,36 +209,28 @@ function renderScores() {
         formatScore(ronaldoScore);
 
 
-    /*
-     * MESSI LEADING
-     */
     if (messiScore > ronaldoScore) {
 
         messiCrown.classList.add("show");
 
         ronaldoCrown.classList.remove("show");
+
     }
 
-
-    /*
-     * RONALDO LEADING
-     */
     else if (ronaldoScore > messiScore) {
 
         ronaldoCrown.classList.add("show");
 
         messiCrown.classList.remove("show");
+
     }
 
-
-    /*
-     * TIE
-     */
     else {
 
         messiCrown.classList.remove("show");
 
         ronaldoCrown.classList.remove("show");
+
     }
 }
 
@@ -285,10 +243,6 @@ function animateScore(element) {
 
     element.classList.remove("pop");
 
-    /*
-     * Force reflow so animation
-     * works on every single tap.
-     */
     void element.offsetWidth;
 
     element.classList.add("pop");
@@ -301,16 +255,12 @@ function animateScore(element) {
 
 async function requestFullScreen() {
 
-    /*
-     * Already fullscreen.
-     */
     if (
         document.fullscreenElement ||
         document.webkitFullscreenElement
     ) {
         return;
     }
-
 
     try {
 
@@ -333,13 +283,7 @@ async function requestFullScreen() {
         }
 
     } catch (error) {
-
-        /*
-         * Some browsers/WebViews block
-         * fullscreen. The scoreboard
-         * continues working normally.
-         */
-
+        // Fullscreen is optional.
     }
 }
 
@@ -360,15 +304,11 @@ async function tryLandscapeLock() {
             await screen.orientation.lock(
                 "landscape"
             );
+
         }
 
     } catch (error) {
-
-        /*
-         * Orientation lock is optional.
-         * Physical phone rotation still works.
-         */
-
+        // Orientation lock is optional.
     }
 }
 
@@ -379,11 +319,6 @@ async function tryLandscapeLock() {
 
 async function enterLiveDisplay() {
 
-    /*
-     * These are triggered by the user's
-     * tap, which is important for browser
-     * fullscreen permissions.
-     */
     await requestFullScreen();
 
     await tryLandscapeLock();
@@ -396,9 +331,6 @@ async function enterLiveDisplay() {
 
 function addVote(player) {
 
-    /*
-     * MESSI
-     */
     if (player === "messi") {
 
         messiScore += 1;
@@ -408,12 +340,9 @@ function addVote(player) {
         );
 
         speakPlayer("messi");
+
     }
 
-
-    /*
-     * RONALDO
-     */
     else if (player === "ronaldo") {
 
         ronaldoScore += 1;
@@ -423,21 +352,15 @@ function addVote(player) {
         );
 
         speakPlayer("ronaldo");
+
     }
 
-
-    /*
-     * Invalid player
-     */
     else {
 
         return;
+
     }
 
-
-    /*
-     * Update scores and crown.
-     */
     renderScores();
 }
 
@@ -450,21 +373,12 @@ messiSide.addEventListener(
     "click",
     function () {
 
-        /*
-         * Initialize speech from the
-         * user's actual tap.
-         */
         initializeAudio();
 
-        /*
-         * Try fullscreen/landscape.
-         */
         enterLiveDisplay();
 
-        /*
-         * Add exactly ONE vote.
-         */
         addVote("messi");
+
     }
 );
 
@@ -477,21 +391,12 @@ ronaldoSide.addEventListener(
     "click",
     function () {
 
-        /*
-         * Initialize speech from the
-         * user's actual tap.
-         */
         initializeAudio();
 
-        /*
-         * Try fullscreen/landscape.
-         */
         enterLiveDisplay();
 
-        /*
-         * Add exactly ONE vote.
-         */
         addVote("ronaldo");
+
     }
 );
 
@@ -504,37 +409,30 @@ resetButton.addEventListener(
     "click",
     function (event) {
 
-        /*
-         * Don't let reset behave like
-         * another screen tap.
-         */
+        event.preventDefault();
+
         event.stopPropagation();
 
-
-        /*
-         * Reset both scores.
-         */
         messiScore = 0;
+
         ronaldoScore = 0;
 
 
-        /*
-         * Stop current voice.
-         */
         if (voiceSupported) {
 
             try {
+
                 window.speechSynthesis.cancel();
+
             } catch (error) {
                 // Ignore.
             }
+
         }
 
 
-        /*
-         * Remove crown and restore 00/00.
-         */
         renderScores();
+
     }
 );
 
@@ -550,6 +448,7 @@ window.addEventListener(
         requestAnimationFrame(
             renderScores
         );
+
     }
 );
 
@@ -565,6 +464,7 @@ window.addEventListener(
         requestAnimationFrame(
             renderScores
         );
+
     }
 );
 
