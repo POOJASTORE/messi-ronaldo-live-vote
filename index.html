@@ -12,7 +12,6 @@
 
     <title>Goat Arena Live</title>
 
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
 
     <link rel="stylesheet" href="style.css">
@@ -65,11 +64,7 @@
             >
                 <div class="player-content">
 
-                    <div
-                        id="ronaldoCrown"
-                        class="crown"
-                        aria-hidden="true"
-                    >👑</div>
+                    <div class="crown" id="ronaldoCrown" aria-hidden="true">👑</div>
 
                     <div class="player-name">
                         RONALDO
@@ -91,28 +86,37 @@
             ></div>
 
 
-            <!-- CHANNEL BRAND -->
-            <div
-                class="channel-brand"
-                aria-label="Goat Arena Live"
-            >
-                🐐 Goat Arena Live
+            <!-- CHANNEL LOGO + BRAND + RESET -->
+            <div class="brand-area">
+
+                <img
+                    id="channelLogo"
+                    class="channel-logo"
+                    src="logo.png"
+                    alt="Goat Arena Live Logo"
+                >
+
+                <div
+                    class="channel-brand"
+                    aria-label="Goat Arena Live"
+                >
+                    Goat Arena Live
+                </div>
+
+                <button
+                    id="resetBtn"
+                    class="reset-button"
+                    type="button"
+                    aria-label="Reset scores"
+                >
+                    RESET
+                </button>
+
             </div>
 
         </section>
 
-
-        <!-- RESET -->
-        <button
-            id="resetBtn"
-            class="reset-button"
-            type="button"
-        >
-            RESET
-        </button>
-
     </main>
-
 
     <script src="script.js"></script>
 
