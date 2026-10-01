@@ -10,7 +10,7 @@
 
     <meta name="theme-color" content="#000000">
 
-    <title>Goat Arena Live</title>
+    <title>GOAT ARENA LIVE</title>
 
     <link rel="manifest" href="manifest.json">
 
@@ -27,13 +27,17 @@
             aria-label="Messi vs Ronaldo Live Scoreboard"
         >
 
-            <!-- MESSI -->
+            <!-- =========================
+                 MESSI SIDE
+            ========================== -->
+
             <button
                 id="messiSide"
                 class="player-side messi-side"
                 type="button"
                 aria-label="Vote for Messi"
             >
+
                 <div class="player-content">
 
                     <div
@@ -52,19 +56,28 @@
                     >00</div>
 
                 </div>
+
             </button>
 
 
-            <!-- RONALDO -->
+            <!-- =========================
+                 RONALDO SIDE
+            ========================== -->
+
             <button
                 id="ronaldoSide"
                 class="player-side ronaldo-side"
                 type="button"
                 aria-label="Vote for Ronaldo"
             >
+
                 <div class="player-content">
 
-                    <div class="crown" id="ronaldoCrown" aria-hidden="true">👑</div>
+                    <div
+                        id="ronaldoCrown"
+                        class="crown"
+                        aria-hidden="true"
+                    >👑</div>
 
                     <div class="player-name">
                         RONALDO
@@ -76,33 +89,45 @@
                     >00</div>
 
                 </div>
+
             </button>
 
 
-            <!-- CENTER DIVIDER -->
+            <!-- =========================
+                 CENTER DIVIDER
+            ========================== -->
+
             <div
                 class="center-line"
                 aria-hidden="true"
             ></div>
 
 
-            <!-- CHANNEL LOGO + BRAND + RESET -->
-            <div class="brand-area">
+            <!-- =========================
+                 CHANNEL BRAND
+            ========================== -->
 
+            <div
+                class="brand-area"
+                aria-label="GOAT ARENA LIVE"
+            >
+
+                <!-- YouTube Channel DP -->
                 <img
                     id="channelLogo"
                     class="channel-logo"
                     src="logo.png"
-                    alt="Goat Arena Live Logo"
+                    alt="GOAT ARENA LIVE"
                 >
 
-                <div
-                    class="channel-brand"
-                    aria-label="Goat Arena Live"
-                >
-                    Goat Arena Live
+
+                <!-- Channel Name -->
+                <div class="channel-brand">
+                    GOAT ARENA LIVE
                 </div>
 
+
+                <!-- Round Reset -->
                 <button
                     id="resetBtn"
                     class="reset-button"
@@ -117,6 +142,7 @@
         </section>
 
     </main>
+
 
     <script src="script.js"></script>
 
